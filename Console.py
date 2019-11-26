@@ -11,63 +11,83 @@ import sys
 class Console(ScrollView):
 
 	Builder.load_file("Console.kv")
+	rowHeight = 22
 
-	yellow = '[color=FFFF00]'
-	blue = '[color=0000FF]'
-	green = '[color=00FF00]'
-	red = '[color=FF0000]'
-	end = '[/color]'
-	recurision = 0
+	pallet = {
+		'yellow':'FFFF00',
+		'white':'FFFFFF',
+		'blue':'0099FF',
+		'green':'00FF00',
+		'red':'FF0000',
+		'purple':'FF00FF',
+		'orange':'FFBB00',
+		'gray':'999999'
+	}
 
 	def __init__(self, logDir, logFile, **kwargs):
 		super(Console, self).__init__(**kwargs)
 		self.consoleGrid = ConsoleGrid()
+		self.consoleGrid.height = 0
 		self.add_widget(self.consoleGrid)
 		self.file = logFile
 		self.dir = logDir
 
 	def clear(self):
 		self.consoleGrid.clear_widgets();
+		self.consoleGrid.height = 0
 
-	def addText(self, text, color=None, Temp=False):
-		for item in self.consoleGrid.children:
-			if item.Temp == True:
-				self.consoleGrid.remove_widget(item)
-		try:
+	def message(self, text, color='default'):
+		self.addText(text, color, True, True, False)
+
+	def message_temp(self, text, color='default'):
+		self.addText(text, color, True, True, True)
+
+	def note(self, text, color='default'):
+		self.addText(text, color, True, False, True)
+
+	def note_temp(self, text, color):
+		self.addText(text, color, True, False, True)
+
+	def log(self, text):
+		self.addText(text, 'default', False, True, False)	
+	
+
+	def addText(self, text, color, Console, Log, Temp):
+		if Log:
 			now = datetime.datetime.now()
 			if not os.path.isdir(self.dir):
-				print "log directory "+self.dir+" does not exist!"
+				print "Error: log directory "+self.dir+" does not exist!"
 				return
 
-			if Temp == False:
-				path = self.dir+"/"+self.file
-				f = open(path, "a")
-				f.write(now.strftime("%Y-%m-%d %H:%M")+": "+str(text)+"\n")
-				f.close()
+			path = self.dir+"/"+self.file
+			f = open(path, "a")
+			f.write(now.strftime("%Y-%m-%d %H:%M")+": "+str(text)+"\n")
+			f.close()
 
-			label = ConsoleLabel(Temp)
-			label.size = (10,10)
+		if Console:
+			for label in self.consoleGrid.children:
+				if label.Temp == True:
+					self.removeLabel(label)
+	
+			label = ConsoleLabel(Temp, font_size=self.rowHeight - 4)
+			label.height = self.rowHeight
 
-			if color == 'yellow':
-				label.text = self.blue+str(text)+self.end
-			if color == 'green':
-				label.text = self.green+str(text)+self.end
-			elif color == 'red':
-				label.text = self.red+str(text)+self.end
-			elif color == 'blue':
-				label.text = self.blue+str(text)+self.end
+			color = color.lower().strip()
+			if color in self.pallet:
+				color = self.pallet[color]
 			else:
-				label.text = str(text)
+				color = self.pallet['white']
+			label.text = '[color='+color+']'+str(text)+'[/color]'		
+			self.addLabel(label)		
+	
+	def addLabel(self, label):
+		self.consoleGrid.height += self.rowHeight
+		self.consoleGrid.add_widget(label)
+		self.scroll_to(label)
 
-			self.consoleGrid.add_widget(label)
-			self.scroll_to(label)
-		except:
-			if self.recurision < 10:
-				self.addText(text, color)
-				self.recursion += 1
-			else:
-				self.recursion = 0 
-
+	def removeLabel(self, label):
+		self.consoleGrid.height -= self.rowHeight
+		self.consoleGrid.remove_widget(label)
 
 class ConsoleLabel(Label):
 	def __init__(self, Temp, *args, **kwargs):
