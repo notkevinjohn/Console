@@ -10,7 +10,7 @@ import sys
 
 class Console(ScrollView):
 
-	Builder.load_file("Console.kv")
+	Builder.load_file("/home/sensys/work/sensys/tests/Console/Console.kv")
 	rowHeight = 22
 
 	pallet = {
