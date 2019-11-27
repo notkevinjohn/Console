@@ -30,7 +30,8 @@ writes the supplied text to the log file, but does not write it to the console.
 ## colors:
 These are the currently supported colors:
 
-`pallet = {
+```python
+pallet = {
                 'yellow':'FFFF00',
                 'white':'FFFFFF',
                 'blue':'0099FF',
@@ -40,6 +41,7 @@ These are the currently supported colors:
                 'orange':'FFBB00',
                 'gray':'999999'
         }`
+```
 
 They can be extended, if desired, by editing Console.py
 ## known issues:
