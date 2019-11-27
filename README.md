@@ -27,6 +27,20 @@ displays the supplied text to the console using the specified color (or white if
 ### log(text)
 writes the supplied text to the log file, but does not write it to the console.  
 
+## colors:
+These are the currently supported colors:
 
+`pallet = {
+                'yellow':'FFFF00',
+                'white':'FFFFFF',
+                'blue':'0099FF',
+                'green':'00FF00',
+                'red':'FF0000',
+                'purple':'FF00FF',
+                'orange':'FFBB00',
+                'gray':'999999'
+        }`
+
+They can be extended, if desired, by editing Console.py
 ## known issues:
 in the file Console.py I have assigned an aboslute path to the layout file (Console.kv). You must replace this with the absolute path on your own system or this will not work. 
