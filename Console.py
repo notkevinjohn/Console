@@ -83,7 +83,8 @@ class Console(ScrollView):
     def addLabel(self, label):
         self.consoleGrid.height += self.rowHeight
         self.consoleGrid.add_widget(label)
-        self.scroll_to(label)
+        if self.consoleGrid.height > self.height:
+            self.scroll_to(label, padding = 10, animate=False)
 
     def removeLabel(self, label):
         self.consoleGrid.height -= self.rowHeight
